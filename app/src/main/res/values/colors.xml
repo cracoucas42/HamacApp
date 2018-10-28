@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="colorToolBarBackground">#aa7a82ef</color>
+    <color name="button_pressed">#355584</color>
+    <color name="button_focused">#3975FF</color>
+    <color name="button_default">#98ccfd</color>
+    <color name="ic_hamac_background">#9EA4A6</color>
+    <color name="marker_circle">#2891b9f5</color>
+    <color name="marker_circle_line">#f091b9f5</color>
+    <color name="marker_circle_point">#c8236e19</color>
+    <color name="marker_circle_point_line">#f0236e19</color>
+</resources>

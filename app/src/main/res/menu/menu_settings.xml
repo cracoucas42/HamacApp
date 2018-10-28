@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.MapsActivity"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+        <item
+            android:id="@+id/action_settings"
+            android:orderInCategory="1"
+            android:title="@string/action_settings"
+            map:showAsAction="never" />
+        <item
+            android:id="@+id/show_rules"
+            android:orderInCategory="1"
+            android:title="@string/show_rules"
+            map:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/show_help"
+            android:orderInCategory="1"
+            android:title="@string/show_help"
+            map:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/show_about"
+            android:orderInCategory="1"
+            android:title="@string/show_about"
+            map:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/show_profil"
+            android:orderInCategory="2"
+            android:title="Profil"
+            android:icon="@drawable/ic_profil"
+            map:showAsAction="always" />
+        <item
+            android:id="@+id/show_map"
+            android:orderInCategory="3"
+            android:title="Map"
+            android:icon="@android:drawable/ic_menu_mapmode"
+            map:showAsAction="always" />
+        <item
+            android:id="@+id/show_search"
+            android:orderInCategory="4"
+            android:title="Search"
+            android:icon="@android:drawable/ic_menu_search"
+            map:showAsAction="always"/>
+</menu>

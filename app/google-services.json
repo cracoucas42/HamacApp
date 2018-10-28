@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "110556135012",
+    "firebase_url": "https://hamacapplication-1537641062208.firebaseio.com",
+    "project_id": "hamacapplication-1537641062208",
+    "storage_bucket": "hamacapplication-1537641062208.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110556135012:android:d72d976a456be148",
+        "android_client_info": {
+          "package_name": "com.hamac.hamacapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "110556135012-ouuppp4k45uqt9tjsg8o7o0uioeerht3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hamac.hamacapplication",
+            "certificate_hash": "b3352324a022df001741d5bb4d1ff7ff462d2b1d"
+          }
+        },
+        {
+          "client_id": "110556135012-cluia2m6fp63sa1tklqbebqtar2qhqk2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8U943Wg2_n1Z5mgUlGo59wdzB1frggtg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110556135012-cluia2m6fp63sa1tklqbebqtar2qhqk2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
