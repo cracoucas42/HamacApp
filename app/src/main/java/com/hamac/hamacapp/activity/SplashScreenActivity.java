@@ -37,7 +37,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class SplashScreenActivity extends Activity {
-    private static int SPLASH_TIME_OUT = 3000;
+    private static int SPLASH_TIME_OUT = 6000;
 //    private LocationManager lm;
     private boolean firstLaunch_flag = true;
     private View splashScreenView;
@@ -97,21 +97,6 @@ public class SplashScreenActivity extends Activity {
 
         //Manage DataBase
         mDatabase = FirebaseDatabase.getInstance().getReference("HAMAC_LIST_ONLINE");
-        //Manage auhorisation to FireBase Storage
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null)
-        {
-            // do your stuff
-        }
-        else
-        {
-            Log.i("SIGNING : ", "Before Signing !");
-            signInAnonymously();
-        }
-        //Manage FireBase storage for photos view
-        storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
 
         //Get Data From FireBase DataBase
         ValueEventListener messageListener = new ValueEventListener()
@@ -161,6 +146,8 @@ public class SplashScreenActivity extends Activity {
                     }
                 }
                 Toast.makeText(getBaseContext(), "Read FireBase After HamacList SIZE : " + hamacList.size(), Toast.LENGTH_LONG).show();
+                //Permet de declencher le Download une fois la liste remplie sinon on execute la fonction sans liste remplie
+                downloadPhotosToLocalFolder();
             }
 
             @Override
@@ -172,8 +159,6 @@ public class SplashScreenActivity extends Activity {
         mDatabase.addValueEventListener(messageListener);
         // copy for removing at onStop()
         mMessageListener = messageListener;
-
-        downloadPhotosToLocalFolder(storageReference, hamacList);
 
 //        Toast.makeText(getApplicationContext(), "Start to delay time...", Toast.LENGTH_LONG).show();
         //Manage Timing
@@ -308,8 +293,25 @@ public class SplashScreenActivity extends Activity {
             }
         }
     }
-    private void downloadPhotosToLocalFolder(StorageReference mStorageReference, ArrayList<Hamac> hamacList)
+    private void downloadPhotosToLocalFolder()
     {
+        //Manage auhorisation to FireBase Storage
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null)
+        {
+            // do your stuff
+        }
+        else
+        {
+            Log.i("SIGNING : ", "Before Signing !");
+            signInAnonymously();
+        }
+        //Manage FireBase storage for photos view
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+
+        //Manage progress Dialog
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Downloading...");
         progressDialog.setMessage(null);
@@ -345,18 +347,22 @@ public class SplashScreenActivity extends Activity {
             // Create a reference with an initial file path and name
             StorageReference pathReference = storageReference.child(currentDir_small);
 
+            Log.i("STORAGE: ", "Current REF : " + storageReference);
+
             //Download small photos from Firebase storage
-            if (mStorageReference != null)
+            if (storageReference != null)
             {
+
                 for (int j = 0; j < photos.length; j++)
                 {
+                    Log.i("BEFORE DOWNLOAD : ", " Current DIR : " + currentDir_small + photos[j] + " INDEX > " + j + " Counter > " + counter);
                     if (photos[j].length() > 1)
                     {
-                        Log.i("DOWNLOAD PHOTOSS: ", "Current REF : " + mStorageReference + " Current DIR : " + currentDir_small + photos[j] + " INDEX > " + j + " Counter > " + counter);
+                        Log.i("DOWNLOAD PHOTO: ", "Current Name : " + photos[j] + " INDEX > " + j + " Counter > " + counter);
                         final File localFile = new File (smallPhotosDirectory, photos[j]);
 
                         final int finalI = j;
-                        mStorageReference.child(currentDir_small + photos[j]).getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>()
+                        storageReference.child(currentDir_small + photos[j]).getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>()
                         {
                             @Override
                             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot)
