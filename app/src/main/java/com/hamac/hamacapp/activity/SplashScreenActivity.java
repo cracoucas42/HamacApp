@@ -437,7 +437,7 @@ public class SplashScreenActivity extends Activity {
         {
             Hamac currentHamac = hamacList.get(i);
             currentDir_original =  currentHamac.getId() + "/OriginalPhotos/";
-            currentDir_small =  currentHamac.getId() + "/SmallPhotos/";
+            currentDir_small =  currentHamac.getId().substring(1) + "/SmallPhotos/";
             //If there are some photos, get the smallFormat and put them into local directory
             //Create original (for splash view) and small/resized one for display without a large consommation
             //Create folder !exist
@@ -450,7 +450,8 @@ public class SplashScreenActivity extends Activity {
                 if (!smallPhotosDirectory.exists())
                 {
                     smallPhotosDirectory.mkdirs();
-                    Log.i("CREATE DIR:", "Current DIR creating: " + smallPhotosDirectory.getAbsolutePath());
+                    if (smallPhotosDirectory.exists())
+                        Log.i("CREATE DIR:", "Current DIR creating: " + smallPhotosDirectory.getAbsolutePath());
                 }
             }
             catch (Exception e)
@@ -479,22 +480,20 @@ public class SplashScreenActivity extends Activity {
 //            Collection<Task> allTasks = new Task<>();
             if (storageReference != null)
             {
-
                 for (int j = 0; j < photos.length; j++)
                 {
                     //Log.i("BEFORE DOWNLOAD : ", " Current DIR : " + currentDir_small + photos[j] + " INDEX > " + j + " Counter > " + counter);
                     if (photos[j].length() > 1) {
-                        Log.i("DOWNLOAD PHOTO: ", "Current Dir : " + smallPhotosDirectory + " | Current Photo: " + photos[j] + " INDEX > " + j + " Counter > " + counter);
+                        Log.i("DOWNLOAD PHOTO: ", "Current Dir : " + smallPhotosDirectory.getAbsolutePath() + " | Current Photo: " + photos[j] + " INDEX > " + j + " Counter > " + counter);
                         File localFile = null;
 
                         try
                         {
-                            localFile = File.createTempFile(photos[j].substring(0, photos[j].length() - 4), photos[j].substring(photos[j].length() - 4), smallPhotosDirectory);
+                            Log.i("PREPARE FILE: ", "Current path : " + smallPhotosDirectory + " | Current Name: " + photos[j].substring(0, photos[j].length() - 4) + "  Current Extension: " + photos[j].substring(photos[j].length() - 4));
+                            localFile = File.createTempFile(photos[j].substring(0, photos[j].length() - 4), photos[j].substring(photos[j].length() - 4), smallPhotosDirectory.getAbsoluteFile());
+                            if (!localFile.exists())
+                                localFile.mkdirs();
                             Log.i("CREATE FILE: ", "Current file : " + localFile.getAbsolutePath());
-                        } catch (Exception e)
-                        {
-                            Log.e("ERROR FILE:", "CREATING FILE EXCEPTION: " + e.getMessage() + " | STACKTRACE: " + e.getStackTrace());
-                        }
 
 //                        final int finalI = j;
 //                        Task currentTask = storageReference.child(currentDir_small + photos[j]).getFile(localFile);
@@ -503,47 +502,50 @@ public class SplashScreenActivity extends Activity {
 //                        final Task downloadPhotosSourceTask = downloadPhotosSource.getTask();
 
 //                        final int finalI = j;
-                        final int finalJ = j;
-                        storageReference.child(currentDir_small + photos[j]).getFile(localFile)
-                                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                        //                        Bitmap bmp = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                                        //                        imageView.setImageBitmap(bmp);
-//                                if (finalI == counter)
-//                                    progressDialog.dismiss();
-                                        downloadPhotosSource.setResult(taskSnapshot);
-                                        Log.i("DOWNLOAD PHOTO: ", "SUCCESS Current Name : " + photos[finalJ] + " INDEX > " + finalJ + " Counter > " + counter);
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-//                                if (finalI == counter)
-//                                {
-//                                    progressDialog.dismiss();
-//                                }
-                                downloadPhotosSource.setException(exception);
+                            final int finalJ = j;
+                            storageReference.child(currentDir_small + photos[j]).getFile(localFile)
+                                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                            //                        Bitmap bmp = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                                            //                        imageView.setImageBitmap(bmp);
+    //                                if (finalI == counter)
+    //                                    progressDialog.dismiss();
+                                            downloadPhotosSource.setResult(taskSnapshot);
+                                            Log.i("DOWNLOAD PHOTO: ", "SUCCESS Current Name : " + photos[finalJ] + " INDEX > " + finalJ + " Counter > " + counter);
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+    //                                if (finalI == counter)
+    //                                {
+    //                                    progressDialog.dismiss();
+    //                                }
+                                    downloadPhotosSource.setException(exception);
 
-                                Log.e("DOWNLOAD PHOTO:", "EXCEPTION : " + exception.getMessage());
-//                                Toast.makeText(SplashScreenActivity.this, , Toast.LENGTH_LONG).show();
-                            }
-                        }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
-                            @Override
-                            public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                // progress percentage
-                                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                    Log.e("DOWNLOAD PHOTO:", "EXCEPTION : " + exception.getMessage());
+    //                                Toast.makeText(SplashScreenActivity.this, , Toast.LENGTH_LONG).show();
+                                }
+                            }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+                                @Override
+                                public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                    // progress percentage
+                                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
 
-                                // percentage in progress dialog
-                                progressDialog.setMessage("Current Photo: " + photos[finalJ] + " - " + ((int) progress) + "%...");
-                            }
-                        }).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
-                                downloadTasks.add(downloadPhotosSourceTask);
-                            }
-                        });
+                                    // percentage in progress dialog
+                                    progressDialog.setMessage("Current Photo: " + photos[finalJ] + " - " + ((int) progress) + "%...");
+                                }
+                            }).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
+                                    downloadTasks.add(downloadPhotosSourceTask);
+                                }
+                            });
 
-
+                        } catch (Exception e)
+                        {
+                            Log.e("ERROR FILE:", "CREATING FILE EXCEPTION: " + e.getMessage() + " | STACKTRACE: " + e.getStackTrace());
+                        }
 //                        Log.i("ADD TASK:", "Current Task added to TASKS " + currentTask.toString());
 //                        if (currentTask != null)
 //                        {
