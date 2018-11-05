@@ -63,6 +63,7 @@ import com.hamac.hamacapp.data.DatabaseHelper;
 import com.hamac.hamacapp.data.Hamac;
 import com.hamac.hamacapp.data.Navigation;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -742,32 +743,32 @@ public class MapsActivity extends AppCompatActivity implements
 
         //Select a photo which exists on firebase Bucket: storageReference + currentDir
         //currentDir = currentDir + "/20180810_142509.jpg";
-        currentDir =  selectedHamac.getId() + "/OriginalPhotos/" + selectedHamac.getPhotoUrl_1();
-
-        //Manage auhorisation to FireBase Storage
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null)
-        {
-            // do your stuff
-        }
-        else
-        {
-            Log.i("SIGNING : ", "Before Signing !");
-            signInAnonymously();
-        }
-        //Manage FireBase storage for photos view
-        storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
-        // Create a reference with an initial file path and name
-        StorageReference pathReference = storageReference.child(currentDir);
-
-        Log.i("CHECK > ", "Current DIR : " + currentDir);
+//        currentDir =  selectedHamac.getId() + "/OriginalPhotos/" + selectedHamac.getPhotoUrl_1();
+//
+//        //Manage auhorisation to FireBase Storage
+//        mAuth = FirebaseAuth.getInstance();
+//        FirebaseUser user = mAuth.getCurrentUser();
+//        if (user != null)
+//        {
+//            // do your stuff
+//        }
+//        else
+//        {
+//            Log.i("SIGNING : ", "Before Signing !");
+//            signInAnonymously();
+//        }
+//        //Manage FireBase storage for photos view
+//        storage = FirebaseStorage.getInstance();
+//        storageReference = storage.getReference();
+//        // Create a reference with an initial file path and name
+//        StorageReference pathReference = storageReference.child(currentDir);
+//
+//        Log.i("CHECK > ", "Current DIR : " + currentDir);
         //Toast.makeText(MapsActivity.this, "Current DIR : " + currentDir, Toast.LENGTH_SHORT).show();
         //Download Image and set into photoView1
 //        popupMarkerPhotoView = new ImageView(this);
         popupMarkerPhotoView = customView.findViewById(R.id.iv_popup_photo1);
-        downloadPhoto(popupMarkerPhotoView, storageReference, currentDir);
+        displayFirstPhoto(popupMarkerPhotoView, selectedHamac);
 
         final Hamac f_selectedHamac = selectedHamac;
         // Get a reference for the custom view close button
@@ -805,22 +806,65 @@ public class MapsActivity extends AppCompatActivity implements
         mPopupWindow.showAtLocation(mView, Gravity.CENTER,0,0);
     }
 
-    private void downloadPhoto(final ImageView mImageView, StorageReference mStorageReference, String mCurrentDir)
+    private void displayFirstPhoto(final ImageView mImageView, Hamac selectedHamac)
     {
-        Log.i("DOWNLOAD PHOTO : ", "Current REF : " + mStorageReference + " Current DIR : " + mCurrentDir);
-        final long ONE_MEGABYTE = 4096 * 4096;
-        mStorageReference.child(mCurrentDir).getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>()
+
+        File extStDir = new File(MapsActivity.this.getFilesDir(), "HamacApp");
+        String currentDirLocal_small = extStDir + "/" +selectedHamac.getId() + "/SmallPhotos/";
+
+        File smallPhotosLocalDirectory = new File(currentDirLocal_small);
+        File localPhoto = null;
+        String smallPhotosLocalDirectory_name = "";
+        String localPhoto_name = "";
+
+        try
         {
-            @Override
-            public void onSuccess(byte[] bytes)
+            if (smallPhotosLocalDirectory.exists())
             {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                if (bitmap != null)
-                    mImageView.setImageBitmap(bitmap);
+                smallPhotosLocalDirectory_name = smallPhotosLocalDirectory.getAbsolutePath();
+                Log.i("CHECK CURRENT DIR:", "Current DIR for selected Hamac exixts: " + smallPhotosLocalDirectory_name);
+                Log.i("CHECK CURRENT PHOTO:", "Current PHOTO SEARCHED:\nPATH: " + smallPhotosLocalDirectory_name + "\nNAME: " + selectedHamac.getPhotoUrl_1().substring(0, selectedHamac.getPhotoUrl_1().length() - 4) + "\nEXT: " + selectedHamac.getPhotoUrl_1().substring(selectedHamac.getPhotoUrl_1().length() - 4));
+
+                localPhoto = new File(smallPhotosLocalDirectory.getAbsolutePath(),  selectedHamac.getPhotoUrl_1());
+                if (localPhoto.exists())
+                {
+                    localPhoto_name = localPhoto.getAbsolutePath();
+                    Log.i("CHECK CURRENT PHOTO:",
+                            "Current PHOTO AbsolutePath: " + localPhoto_name);
+                    //Set to imageView PHOTO 1
+                    Bitmap myBitmap = BitmapFactory.decodeFile(localPhoto.getAbsolutePath());
+                    mImageView.setImageBitmap(myBitmap);
+                }
                 else
-                    Log.i("Set Image View", "Set downloaded photo to photoView ! Bytes length : " + bytes.length);
+                {
+                    Log.w("CHECK CURRENT PHOTO:", "Current PHOTO for selected Hamac doesn't exixt: " + localPhoto_name);
+                }
             }
-        });
+            else
+            {
+                Log.w("CHECK CURRENT DIR:", "Current DIR for selected Hamac doesn't exixt: " + smallPhotosLocalDirectory_name);
+            }
+        }
+        catch (Exception e)
+        {
+            Log.e("CHECK CURRENT:", "Current DIR or PHOTO for selected Hamac doesn't exixt:\nDIR: " + smallPhotosLocalDirectory_name + "\nFILE: " + localPhoto_name);
+        }
+//
+//
+//        Log.i("DOWNLOAD PHOTO : ", "Current REF : " + mStorageReference + " Current DIR : " + mCurrentDir);
+//        final long ONE_MEGABYTE = 4096 * 4096;
+//        mStorageReference.child(mCurrentDir).getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>()
+//        {
+//            @Override
+//            public void onSuccess(byte[] bytes)
+//            {
+//                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                if (bitmap != null)
+//                    mImageView.setImageBitmap(bitmap);
+//                else
+//                    Log.i("Set Image View", "Set downloaded photo to photoView ! Bytes length : " + bytes.length);
+//            }
+//        });
     }
 
     private void signInAnonymously()

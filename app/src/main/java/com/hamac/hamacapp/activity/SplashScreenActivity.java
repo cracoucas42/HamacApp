@@ -17,7 +17,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -41,11 +40,12 @@ import com.hamac.hamacapp.data.Hamac;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static java.io.File.createTempFile;
 
 public class SplashScreenActivity extends Activity {
-    private static int SPLASH_TIME_OUT = 6000;
+    private static int SPLASH_TIME_OUT = 3000;
 //    private LocationManager lm;
     private boolean firstLaunch_flag = true;
     private View splashScreenView;
@@ -66,17 +66,19 @@ public class SplashScreenActivity extends Activity {
     private TaskCompletionSource<DataSnapshot> dbSource = new TaskCompletionSource<>();
     private Task dbTask = dbSource.getTask();
     //Create a task to download photos from storage
-    private Collection<Task> downloadTasks = null;
-    private TaskCompletionSource<FileDownloadTask.TaskSnapshot> downloadPhotosSource = new TaskCompletionSource<FileDownloadTask.TaskSnapshot>();
-    private Task downloadPhotosSourceTask = downloadPhotosSource.getTask();
+//    private Collection<Task> downloadTasks = null;
+//    private TaskCompletionSource<FileDownloadTask.TaskSnapshot> downloadPhotosSource = new TaskCompletionSource<FileDownloadTask.TaskSnapshot>();
+//    private Task downloadPhotosSourceTask = downloadPhotosSource.getTask();
     //Create task for displaying the splashscreen
-    private TaskCompletionSource<Void> delaySource = new TaskCompletionSource<>();
-    private Task<Void> delayTask = delaySource.getTask();
+//    private TaskCompletionSource<Void> delaySource = new TaskCompletionSource<>();
+//    private Task<Void> delayTask = delaySource.getTask();
     //Create a global task to handle event of all of them to launch process after all is complete
     private Task<Void> allTask;
+    List<FileDownloadTask> tasks;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
@@ -148,6 +150,7 @@ public class SplashScreenActivity extends Activity {
                                 + " LAT :" + ds.child("lat").getValue(Double.class));
                         hamacList.add(currentHamac);
                     }
+
                 }
                 Toast.makeText(getBaseContext(), "Read FireBase After HamacList SIZE : " + hamacList.size(), Toast.LENGTH_LONG).show();
                 //Permet de declencher le Download une fois la liste remplie sinon on execute la fonction sans liste remplie
@@ -175,106 +178,31 @@ public class SplashScreenActivity extends Activity {
         // copy for removing at onStop()
         mMessageListener = messageListener;
 
-        dbTask.continueWith(new Continuation<String, Task<FileDownloadTask.TaskSnapshot>>()
+
+        dbTask.addOnSuccessListener(new OnSuccessListener<DataSnapshot>()
         {
             @Override
-            public Task<FileDownloadTask.TaskSnapshot> then(@NonNull Task<String> task) throws Exception
+            public void onSuccess(DataSnapshot dataSnapshot)
             {
-                // Take the result from the first task and start the second one
-//                AuthResult result = task.getResult();
-                //DownloadFile To local folder
-                downloadPhotosSourceTask = downloadPhotosToLocalFolder();
-                return downloadPhotosSourceTask;
+                //Manage progress Dialog
+                progressDialog = new ProgressDialog(SplashScreenActivity.this);
+                progressDialog.setTitle("Downloading...");
+                progressDialog.setMessage(null);
+                progressDialog.show();
+
+                downloadPhotosToLocalFolder();
+                Log.i("DOWNLOAD PHOTOS:", "INTO SUCCESS AFTER DBTASK |HAMACLIST SIZE: " + hamacList.size());
             }
-        }).continueWith(new Continuation<Task<FileDownloadTask.TaskSnapshot>, String>()
+        }).addOnFailureListener(new OnFailureListener()
         {
             @Override
-            public String then(@NonNull Task<Task<FileDownloadTask.TaskSnapshot>> task) throws Exception
+            public void onFailure(@NonNull Exception e)
             {
-                String delay = "delay passed";
-                new Handler().postDelayed(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        //Launch next activity after all is complete
-//                Intent i = new Intent(SplashScreenActivity.this, MapsActivity.class);
-//                i.putExtra("HAMAC_LIST_FROM_ONLINE_DB", hamacList);
-//                startActivity(i);
-//                finish();
-                        delaySource.setResult(null);
-                    }
-                }, SPLASH_TIME_OUT);
-
-                return delay;
-            }
-        }).addOnSuccessListener(new OnSuccessListener<String>() {
-            @Override
-            public void onSuccess(String s) {
-                // Chain of tasks completed successfully, got result from last task.
-                // ...
-                //Hide progress dialog for download
-                progressDialog.dismiss();
-
-                //Launch next activity after all is complete
-                Intent i = new Intent(SplashScreenActivity.this, MapsActivity.class);
-                i.putExtra("HAMAC_LIST_FROM_ONLINE_DB", hamacList);
-                startActivity(i);
-                finish();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
                 // One of the tasks in the chain failed with an exception.
                 // ...
-                Log.e("ERROR TASKS:", "EXCEPTION: " + e.getMessage() + " / STACKTRACE:" + e.getStackTrace());
+                Log.e("ERROR DB TASKS:", "EXCEPTION DBTASKS: " + e.getMessage() + " / STACKTRACE:" + e.getStackTrace());
             }
         });
-
-//        //DownloadFile To local folder
-//        downloadPhotosSourceTask = downloadPhotosToLocalFolder();
-//
-////        Toast.makeText(getApplicationContext(), "Start to delay time...", Toast.LENGTH_LONG).show();
-//        //Manage Timing
-//        new Handler().postDelayed(new Runnable()
-//        {
-//            @Override
-//            public void run()
-//            {
-//                //Launch next activity after all is complete
-////                Intent i = new Intent(SplashScreenActivity.this, MapsActivity.class);
-////                i.putExtra("HAMAC_LIST_FROM_ONLINE_DB", hamacList);
-////                startActivity(i);
-////                finish();
-//                delaySource.setResult(null);
-//            }
-//        }, SPLASH_TIME_OUT);
-
-        // during onCreate():
-//        allTask = Tasks.whenAll(dbTask, downloadPhotosSourceTask, delayTask);
-//        allTask.addOnSuccessListener(new OnSuccessListener<Void>() {
-//            @Override
-//            public void onSuccess(Void aVoid)
-//            {
-//                // do something with db data?
-//                // DataSnapshot data = (DataSnapshot) dbTask.getResult();
-//
-//                //Hide progress dialog for download
-//                progressDialog.dismiss();
-//
-//                //Launch next activity after all is complete
-//                Intent i = new Intent(SplashScreenActivity.this, MapsActivity.class);
-//                i.putExtra("HAMAC_LIST_FROM_ONLINE_DB", hamacList);
-//                startActivity(i);
-//                finish();
-//            }
-//        });
-//        allTask.addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                // apologize profusely to the user!
-//            }
-//        });
     }
 
     private void askForPermission()
@@ -285,7 +213,8 @@ public class SplashScreenActivity extends Activity {
                                 Manifest.permission.ACCESS_FINE_LOCATION,
                                 Manifest.permission.ACCESS_COARSE_LOCATION,
                                 Manifest.permission.INTERNET,
-                                Manifest.permission.READ_EXTERNAL_STORAGE
+                                Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE
                         },
                 1);
     }
@@ -370,28 +299,7 @@ public class SplashScreenActivity extends Activity {
         });
     }
 
-//    private void downloadPhotos(StorageReference mStorageReference, String mCurrentDir, String[] photos, File folder)
-//    {
-//        final long ONE_MEGABYTE = 4096 * 4096;
-//
-//        for (int i = 0; i < photos.length; i++)
-//        {
-//            Log.i("DOWNLOAD PHOTOSS: ", "Current REF : " + mStorageReference + " Current DIR : " + mCurrentDir + photos[i]);
-//            if (photos[i].length() > 1)
-//            {
-//                mStorageReference.child(mCurrentDir + photos[i]).getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>()
-//                {
-//                    @Override
-//                    public void onSuccess(byte[] bytes)
-//                    {
-//                        //dialog dismiss
-//
-//                    }
-//                });
-//            }
-//        }
-//    }
-    private Task<FileDownloadTask.TaskSnapshot> downloadPhotosToLocalFolder()
+    private void downloadPhotosToLocalFolder()
     {
         //Manage auhorization to FireBase Storage
         mAuth = FirebaseAuth.getInstance();
@@ -409,27 +317,8 @@ public class SplashScreenActivity extends Activity {
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
-        //Manage progress Dialog
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Downloading...");
-        progressDialog.setMessage(null);
-        progressDialog.show();
-
         // - 1 because of indice i which start to 0
         final int counter = countPhotoToDownload(hamacList) - 1;
-        
-//        Collection<Task> tasks = null;
-//        final TaskCompletionSource<FileDownloadTask.TaskSnapshot> downloadPhotosSource = new TaskCompletionSource<FileDownloadTask.TaskSnapshot>();
-//        final Task downloadPhotosSourceTask = downloadPhotosSource.getTask();
-
-
-//        Task<FileDownloadTask.TaskSnapshot> marco(int delay) {
-//        TaskCompletionSource<FileDownloadTask.TaskSnapshot> taskCompletionSource = new TaskCompletionSource<>();
-//
-//        new Handler().postDelayed(() -> taskCompletionSource.setResult("polo"), delay);
-//
-//        return taskCompletionSource.getTask();
-//    }
 
         Log.i("INTO DOWNLOAD:", "HAMACLIST SIZE: " + hamacList.size());
 
@@ -437,15 +326,22 @@ public class SplashScreenActivity extends Activity {
         {
             Hamac currentHamac = hamacList.get(i);
             currentDir_original =  currentHamac.getId() + "/OriginalPhotos/";
-            currentDir_small =  currentHamac.getId().substring(1) + "/SmallPhotos/";
+            currentDir_small =  currentHamac.getId() + "/SmallPhotos/";
             //If there are some photos, get the smallFormat and put them into local directory
             //Create original (for splash view) and small/resized one for display without a large consommation
             //Create folder !exist
 
+            isExternalStorageReadable();
+            isExternalStorageWritable();
+
+//            File extStDir = getPublicAlbumStorageDir("HamacApp");
+            File extStDir = new File(SplashScreenActivity.this.getFilesDir(), "HamacApp");
+
             File smallPhotosDirectory = null;
             try
             {
-                String smallPhotos_folderPath = Environment.getExternalStorageDirectory() + "/" + currentDir_small;
+//                String smallPhotos_folderPath = Environment.getExternalStorageDirectory() + "/" + currentDir_small;
+                String smallPhotos_folderPath = extStDir + "/" + currentDir_small;
                 smallPhotosDirectory = new File(smallPhotos_folderPath);
                 if (!smallPhotosDirectory.exists())
                 {
@@ -459,10 +355,10 @@ public class SplashScreenActivity extends Activity {
                 Log.e("ERROR DIR:", "CREATING DIRE EXCEPTION: " + e.getMessage() + " | STACKTRACE: " + e.getStackTrace());
             }
 
-            String originalPhotos_folderPath = Environment.getExternalStorageDirectory() + currentDir_original;
-            File originalPhotosDirectory = new File(originalPhotos_folderPath);
-            if (!originalPhotosDirectory.exists())
-                originalPhotosDirectory.mkdirs();
+//            String originalPhotos_folderPath = Environment.getExternalStorageDirectory() + currentDir_original;
+//            File originalPhotosDirectory = new File(originalPhotos_folderPath);
+//            if (!originalPhotosDirectory.exists())
+//                originalPhotosDirectory.mkdirs();
 
             final String[] photos = {currentHamac.getPhotoUrl_1(),
                     currentHamac.getPhotoUrl_2(),
@@ -471,13 +367,7 @@ public class SplashScreenActivity extends Activity {
                     currentHamac.getPhotoUrl_5()};
 
             // Create a reference with an initial file path and name
-            StorageReference pathReference = storageReference.child(currentDir_small);
-
-//            Log.i("STORAGE: ", "Current REF : " + storageReference);
-
-            //Download small photos from Firebase storage
-
-//            Collection<Task> allTasks = new Task<>();
+//            StorageReference pathReference = storageReference.child(currentDir_small);
             if (storageReference != null)
             {
                 for (int j = 0; j < photos.length; j++)
@@ -490,104 +380,129 @@ public class SplashScreenActivity extends Activity {
                         try
                         {
                             Log.i("PREPARE FILE: ", "Current path : " + smallPhotosDirectory + " | Current Name: " + photos[j].substring(0, photos[j].length() - 4) + "  Current Extension: " + photos[j].substring(photos[j].length() - 4));
-                            localFile = File.createTempFile(photos[j].substring(0, photos[j].length() - 4), photos[j].substring(photos[j].length() - 4), smallPhotosDirectory.getAbsoluteFile());
+                            localFile = new File(smallPhotosDirectory.getAbsolutePath(), photos[j]);
                             if (!localFile.exists())
-                                localFile.mkdirs();
-                            Log.i("CREATE FILE: ", "Current file : " + localFile.getAbsolutePath());
-
-//                        final int finalI = j;
-//                        Task currentTask = storageReference.child(currentDir_small + photos[j]).getFile(localFile);
-
-//                        final TaskCompletionSource<FileDownloadTask.TaskSnapshot> downloadPhotosSource = new TaskCompletionSource<FileDownloadTask.TaskSnapshot>();
-//                        final Task downloadPhotosSourceTask = downloadPhotosSource.getTask();
-
-//                        final int finalI = j;
-                            final int finalJ = j;
-                            storageReference.child(currentDir_small + photos[j]).getFile(localFile)
-                                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                            //                        Bitmap bmp = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                                            //                        imageView.setImageBitmap(bmp);
-    //                                if (finalI == counter)
-    //                                    progressDialog.dismiss();
-                                            downloadPhotosSource.setResult(taskSnapshot);
-                                            Log.i("DOWNLOAD PHOTO: ", "SUCCESS Current Name : " + photos[finalJ] + " INDEX > " + finalJ + " Counter > " + counter);
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception exception) {
-    //                                if (finalI == counter)
-    //                                {
-    //                                    progressDialog.dismiss();
-    //                                }
-                                    downloadPhotosSource.setException(exception);
-
-                                    Log.e("DOWNLOAD PHOTO:", "EXCEPTION : " + exception.getMessage());
-    //                                Toast.makeText(SplashScreenActivity.this, , Toast.LENGTH_LONG).show();
+                            {
+//                                localFile.mkdirs();
+                                Log.i("FILE CREATED: ", "Current file : " + localFile.getAbsolutePath());
+                                final int finalJ = j;
+                                storageReference.child(currentDir_small + photos[j]).getFile(localFile)
+                                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>()
+                                {
+                                    @Override
+                                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot)
+                                    {
+                                        Log.i("DOWNLOAD PHOTO: ", "SUCCESS Current Name : " + photos[finalJ] + " INDEX > " + finalJ + " Counter > " + counter);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener()
+                                {
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception)
+                                    {
+                                        Log.e("DOWNLOAD PHOTO:", "EXCEPTION : " + exception.getMessage());
+                                        //                                Toast.makeText(SplashScreenActivity.this, , Toast.LENGTH_LONG).show();
+                                    }
+                                })
+                                .addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>()
+                                {
+                                    @Override
+                                    public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot)
+                                    {
+                                        // progress percentage
+                                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                                        // percentage in progress dialog
+                                        progressDialog.setMessage("Current Photo: " + photos[finalJ] + " - " + ((int) progress) + "%...");
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                String localFile_Name = localFile.getAbsolutePath();
+                                Log.w("FILE EXISTS: ", "File already exists into folder: " + localFile_Name);
+                                boolean del = false;
+//                                del = localFile.delete();
+                                if (del)
+                                {
+                                    Log.i("FILE DELETED: ", "File has been deleted: " + localFile_Name);
                                 }
-                            }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
-                                @Override
-                                public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                    // progress percentage
-                                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-
-                                    // percentage in progress dialog
-                                    progressDialog.setMessage("Current Photo: " + photos[finalJ] + " - " + ((int) progress) + "%...");
+                                else
+                                {
+                                    Log.e("FILE DELETED: ", "FAILED TO DELETE FILE: " + localFile_Name);
                                 }
-                            }).addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
-                                    downloadTasks.add(downloadPhotosSourceTask);
-                                }
-                            });
-
-                        } catch (Exception e)
+                            }
+                        }
+                        catch (Exception e)
                         {
                             Log.e("ERROR FILE:", "CREATING FILE EXCEPTION: " + e.getMessage() + " | STACKTRACE: " + e.getStackTrace());
                         }
-//                        Log.i("ADD TASK:", "Current Task added to TASKS " + currentTask.toString());
-//                        if (currentTask != null)
-//                        {
-//                            tasks.add(currentTask);
-//                            Log.i("ADD TASK:", "TASKS SIZE: " + tasks.size());
-//                        }
                     }
                 }
-
-                // during onCreate():
-//                if (tasks != null)
-//                {
-//                    Log.i("WHEN ALL TASK:", "BEFORE GET COMPLETE TASKS SIZE: " + tasks.size());
-//                    allTask = Tasks.whenAll((Task<?>) tasks);
-//                    allTask.addOnSuccessListener(new OnSuccessListener<Void>() {
-//                        @Override
-//                        public void onSuccess(Void aVoid)
-//                        {
-//                            Toast.makeText(SplashScreenActivity.this, "ALL TASKS COMPLETED !!!", Toast.LENGTH_LONG).show();
-//                            progressDialog.dismiss();
-////                        DataSnapshot data = dbTask.getResult();
-////                        // do something with db data?
-////                        startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
-//                        }
-//                    });
-//                    allTask.addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            // apologize profusely to the user!
-//                            progressDialog.dismiss();
-//                            Toast.makeText(SplashScreenActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-//                        }
-//                    });
-//                }
-
             }
             else
             {
                 Toast.makeText(SplashScreenActivity.this, "Upload file before downloading", Toast.LENGTH_LONG).show();
             }
         }
-        return downloadPhotosSource.getTask();
+        // Find all DownloadTasks under this StorageReference (in this example, there should be one)
+//                List<FileDownloadTask> tasks = storageReference.getActiveDownloadTasks();
+        tasks = storageReference.getActiveDownloadTasks();
+
+        Log.i("DOWNLOAD TASK NB:", "NUMBER OF DOWNLOAD TASKS: " + tasks.size());
+//                if (tasks.size() > 0)
+//                {
+//                    // Get the task monitoring the download
+//                    FileDownloadTask task = tasks.get(0);
+//
+//                    // Add new listeners to the task using an Activity scope
+//                    task.addOnSuccessListener(this, new OnSuccessListener<FileDownloadTask.TaskSnapshot>()
+//                    {
+//                        @Override
+//                        public void onSuccess(FileDownloadTask.TaskSnapshot state) {
+//                            // Success!
+//                            // ...
+//                        }
+//                    });
+//                }
+
+
+//                Task<Void> allTask;
+        allTask = Tasks.whenAll(tasks);
+        allTask.addOnSuccessListener(new OnSuccessListener<Void>()
+        {
+            @Override
+            public void onSuccess(Void aVoid)
+            {
+//                        DataSnapshot data = dbTask.getResult();
+//                        // do something with db data?
+//                        startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
+                progressDialog.dismiss();
+                new Handler().postDelayed(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+
+                        //Launch next activity after all is complete
+                        Intent i = new Intent(SplashScreenActivity.this, MapsActivity.class);
+                        i.putExtra("HAMAC_LIST_FROM_ONLINE_DB", hamacList);
+                        startActivity(i);
+                        finish();
+//                                delaySource.setResult(null);
+                    }
+                }, SPLASH_TIME_OUT);
+            }
+        }).addOnFailureListener(new OnFailureListener()
+        {
+            @Override
+            public void onFailure(@NonNull Exception e)
+            {
+                // apologize profusely to the user!
+                Log.e("ALL TASK FAILURE:", "ALL TASK FAILURE EXCEPTION: " + e.getMessage() + " | STACKTRACE: " + e.getStackTrace());
+                e.printStackTrace();
+            }
+        });
+//        return downloadPhotosSource.getTask();
     }
     private int countPhotoToDownload(ArrayList<Hamac> hamacList)
     {
@@ -610,5 +525,32 @@ public class SplashScreenActivity extends Activity {
             }
         }
         return counter;
+    }
+    /* Checks if external storage is available for read and write */
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+    /* Checks if external storage is available to at least read */
+    public boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+    public File getPublicAlbumStorageDir(String albumName) {
+        // Get the directory for the user's public pictures directory.
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), albumName);
+        if (!file.mkdirs()) {
+            Log.e("DIRECTORY PICTURES:", "Directory not created");
+        }
+        return file;
     }
 }

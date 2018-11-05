@@ -29,6 +29,7 @@ import com.hamac.hamacapp.R;
 import com.hamac.hamacapp.data.Hamac;
 import com.hamac.hamacapp.data.Navigation;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -42,6 +43,10 @@ public class HamacActivity extends AppCompatActivity {
     private ImageView saveHamacBtn;
     private ImageView closeHamacBtn;
     private ImageView photoView1;
+    private ImageView photoView2;
+    private ImageView photoView3;
+    private ImageView photoView4;
+    private ImageView photoView5;
     private Uri filePath;
     private String currentDir;
     private Hamac selectedHamac = new Hamac();
@@ -112,18 +117,61 @@ public class HamacActivity extends AppCompatActivity {
 
         //Take data view from activity to ui view into layout
         photoView1 = findViewById(R.id.iv_hamac_photo1);
+        photoView2 = findViewById(R.id.iv_hamac_photo2);
+        photoView3 = findViewById(R.id.iv_hamac_photo3);
+        photoView4 = findViewById(R.id.iv_hamac_photo4);
+        photoView5 = findViewById(R.id.iv_hamac_photo5);
 
-        //Manage FireBase
-        storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
+        ImageView[] imageViews = {photoView1, photoView2, photoView3, photoView4, photoView5};
 
-        //Current directory of the current hamac selected
-        currentDir = "hamac_1";
+        String[] photos = {selectedHamac.getPhotoUrl_1(),
+                selectedHamac.getPhotoUrl_2(),
+                selectedHamac.getPhotoUrl_3(),
+                selectedHamac.getPhotoUrl_4(),
+                selectedHamac.getPhotoUrl_5()};
+        
+        File extStDir = new File(HamacActivity.this.getFilesDir(), "HamacApp");
+        String currentDirLocal_small = extStDir + "/" +selectedHamac.getId() + "/SmallPhotos/";
 
-        //Download Image and set into photoView1
-        //Select a photo which exists on firebase Bucket: storageReference + currentDir
-        currentDir = currentDir + "/20180810_142509.jpg";
-        downloadPhoto(photoView1, storageReference, currentDir);
+        File smallPhotosLocalDirectory = new File(currentDirLocal_small);
+        File localPhoto = null;
+        try
+        {
+            if (smallPhotosLocalDirectory.exists())
+            {
+                Log.i("CHECK CURRENT DIR:", "Current DIR for selected Hamac exixts: " + smallPhotosLocalDirectory.getAbsolutePath());
+                Log.i("CHECK CURRENT PHOTO:", "Current PHOTO SEARCHED:\nPATH: " + smallPhotosLocalDirectory.getAbsoluteFile() + "\nNAME: " + selectedHamac.getPhotoUrl_1().substring(0, selectedHamac.getPhotoUrl_1().length() - 4) + "\nEXT: " + selectedHamac.getPhotoUrl_1().substring(selectedHamac.getPhotoUrl_1().length() - 4));
+                
+                for(int i=0; i < photos.length; i++)
+                {
+                    localPhoto = new File(smallPhotosLocalDirectory.getAbsolutePath(),  photos[i]);
+                    if (localPhoto.exists())
+                    {
+                        Log.i("CHECK CURRENT PHOTO:",
+                                "Current PHOTO AbsolutePath: " + localPhoto.getAbsolutePath()
+                                        + "\nCanonicalPath: " + localPhoto.getCanonicalPath()
+                                        + "\nPath: " + localPhoto.getPath()
+                                        + "\nName: " + localPhoto.getName());
+                        //Set to imageView PHOTO 1
+                        Bitmap myBitmap = BitmapFactory.decodeFile(localPhoto.getAbsolutePath());
+                        imageViews[i].setImageBitmap(myBitmap);
+                    }
+                    else
+                    {
+                        Log.e("CHECK CURRENT PHOTO:", "Current PHOTO for selected Hamac doesn't exixt: " + localPhoto.getAbsolutePath());
+                    }
+                }
+            }
+            else
+            {
+                Log.e("CHECK CURRENT DIR:", "Current DIR for selected Hamac doesn't exixt: " + smallPhotosLocalDirectory.getAbsolutePath());
+            }
+        }
+        catch (Exception e)
+        {
+            Log.e("CHECK CURRENT:", "Current DIR or PHOTO for selected Hamac doesn't exixt:\nDIR: " + smallPhotosLocalDirectory.getAbsolutePath() + "\nFILE: " + localPhoto.getAbsolutePath());
+        }
+
 
         //Start Manage Toolbar > how to share this code into several Activities
         Toolbar hamacToolBar = findViewById(R.id.hamac_toolbar);
