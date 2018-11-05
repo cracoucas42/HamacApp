@@ -49,9 +49,6 @@ public class Navigation
             case R.id.show_rules:
                 myIntent = new Intent(context, RulesActivity.class);
                 break;
-            case R.id.show_help:
-                myIntent = new Intent(context, HelpActivity.class);
-                break;
             case R.id.show_about:
                 myIntent = new Intent(context, AboutActivity.class);
                 break;

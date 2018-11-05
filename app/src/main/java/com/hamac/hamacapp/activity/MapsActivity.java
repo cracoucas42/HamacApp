@@ -739,36 +739,23 @@ public class MapsActivity extends AppCompatActivity implements
 
         //Set current Popup-textView with title of current clicked HamacMarker
         TextView popupMarkerTitle = customView.findViewById(R.id.tv_popup_marker_title);
-        popupMarkerTitle.setText(selectedHamac.getDescription());
+        popupMarkerTitle.setText(selectedHamac.getName());
 
-        //Select a photo which exists on firebase Bucket: storageReference + currentDir
-        //currentDir = currentDir + "/20180810_142509.jpg";
-//        currentDir =  selectedHamac.getId() + "/OriginalPhotos/" + selectedHamac.getPhotoUrl_1();
-//
-//        //Manage auhorisation to FireBase Storage
-//        mAuth = FirebaseAuth.getInstance();
-//        FirebaseUser user = mAuth.getCurrentUser();
-//        if (user != null)
-//        {
-//            // do your stuff
-//        }
-//        else
-//        {
-//            Log.i("SIGNING : ", "Before Signing !");
-//            signInAnonymously();
-//        }
-//        //Manage FireBase storage for photos view
-//        storage = FirebaseStorage.getInstance();
-//        storageReference = storage.getReference();
-//        // Create a reference with an initial file path and name
-//        StorageReference pathReference = storageReference.child(currentDir);
-//
-//        Log.i("CHECK > ", "Current DIR : " + currentDir);
-        //Toast.makeText(MapsActivity.this, "Current DIR : " + currentDir, Toast.LENGTH_SHORT).show();
-        //Download Image and set into photoView1
-//        popupMarkerPhotoView = new ImageView(this);
+        TextView popupMarkerDescription = customView.findViewById(R.id.tv_popup_marker_description);
+        popupMarkerDescription.setText(selectedHamac.getDescription());
+
         popupMarkerPhotoView = customView.findViewById(R.id.iv_popup_photo1);
         displayFirstPhoto(popupMarkerPhotoView, selectedHamac);
+
+        TextView popupMarkerLat = customView.findViewById(R.id.tv_popup_marker_lat);
+        popupMarkerLat.setText("Latitude : " + selectedHamac.getLat());
+
+        TextView popupMarkerLng = customView.findViewById(R.id.tv_popup_marker_lng);
+        popupMarkerLng.setText("Longitude : " + selectedHamac.getLng());
+
+        //Make a function to get the country which match with coordonates
+        TextView popupMarkerCountry = customView.findViewById(R.id.tv_popup_marker_country);
+        popupMarkerCountry.setText("Country : N/A");
 
         final Hamac f_selectedHamac = selectedHamac;
         // Get a reference for the custom view close button

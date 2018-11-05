@@ -67,10 +67,6 @@ public class HamacActivity extends AppCompatActivity {
         firstLaunch_flag = myIntent.getBooleanExtra("FIRST_LAUNCH", true);
         selectedHamac = (Hamac) myIntent.getSerializableExtra("HAMAC_SELECTED");
 
-//        //Manage FireBase storage for photos view
-//        storage = FirebaseStorage.getInstance();
-//        storageReference = storage.getReference();
-
         //Configure addPhotoBtn add_image_hamac_details
         addPhotoBtn = findViewById(R.id.iv_add_image_hamac_details);
         addPhotoBtn.setOnClickListener(new View.OnClickListener()
@@ -114,6 +110,16 @@ public class HamacActivity extends AppCompatActivity {
         //Description
         hamacDescriptionView = findViewById(R.id.tv_hamac_description);
         hamacDescriptionView.setText(selectedHamac.getDescription());
+
+        TextView hamacLatitudeView = findViewById(R.id.tv_hamac_lat);
+        hamacLatitudeView.setText("Latitude : " + selectedHamac.getLat());
+
+        TextView hamacLongitudeView = findViewById(R.id.tv_hamac_lng);
+        hamacLongitudeView.setText("Longitude : " + selectedHamac.getLng());
+
+        //Make a function to get the country which match with coordonates
+        TextView hamacCountryView = findViewById(R.id.tv_hamac_country);
+        hamacCountryView.setText("Country : N/A");
 
         //Take data view from activity to ui view into layout
         photoView1 = findViewById(R.id.iv_hamac_photo1);
@@ -171,7 +177,6 @@ public class HamacActivity extends AppCompatActivity {
         {
             Log.e("CHECK CURRENT:", "Current DIR or PHOTO for selected Hamac doesn't exixt:\nDIR: " + smallPhotosLocalDirectory.getAbsolutePath() + "\nFILE: " + localPhoto.getAbsolutePath());
         }
-
 
         //Start Manage Toolbar > how to share this code into several Activities
         Toolbar hamacToolBar = findViewById(R.id.hamac_toolbar);

@@ -14,65 +14,71 @@
     android:layout_marginBottom="4dp"
     android:orientation="vertical">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <android.support.constraint.ConstraintLayout
+        <LinearLayout
+            android:id="@+id/popup_marker_title_bar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/iv_popup_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:srcCompat="@mipmap/ic_hamac" />
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/tv_popup_marker_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="false"
-                android:layout_alignParentTop="false"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:gravity="left"
-                android:text="Hamac Details get data from object Hamac"
-                android:textColor="#89da1334"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/iv_popup_image"
-                app:layout_constraintStart_toEndOf="@+id/iv_popup_image"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:background="@android:color/transparent" />
+                <ImageView
+                    android:id="@+id/iv_popup_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:srcCompat="@mipmap/ic_hamac" />
 
-            <ImageButton
-                android:id="@+id/ib_popup_marker_close"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_gravity="right"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:contentDescription="@string/popup_exit_button_description"
-                android:background="#00ffffff"
-                android:src="@mipmap/ic_close_popup"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tv_popup_marker_title" />
-        </android.support.constraint.ConstraintLayout>
+                <TextView
+                    android:id="@+id/tv_popup_marker_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="false"
+                    android:layout_alignParentTop="false"
+                    android:layout_marginLeft="8dp"
+                    android:gravity="left"
+                    android:text="Hamac Details get data from object Hamac"
+                    android:textColor="#89da1334"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toRightOf="@+id/iv_popup_image"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:background="@android:color/transparent" />
 
-    </LinearLayout>
+                <ImageButton
+                    android:id="@+id/ib_popup_marker_close"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="right"
+                    android:background="#00ffffff"
+                    android:contentDescription="@string/popup_exit_button_description"
+                    android:src="@mipmap/ic_close_popup"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_popup_marker_title"
+                    app:layout_constraintRight_toRightOf="parent" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+            </android.support.constraint.ConstraintLayout>
 
-        <android.support.constraint.ConstraintLayout
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/popup_marker_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@drawable/border_image_view"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/popup_marker_title_bar">
 
             <TextView
                 android:id="@+id/tv_popup_marker_description"
@@ -81,68 +87,88 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
                 android:gravity="left"
                 android:text="Hamac Details get data from object Hamac"
                 android:textColor="#5e2341c2"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 tools:background="@android:color/transparent" />
-        </android.support.constraint.ConstraintLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:id="@+id/iv_popup_photo1"
-                android:layout_width="300dp"
-                android:layout_height="150dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@android:drawable/ic_menu_report_image" />
-
-        </android.support.constraint.ConstraintLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageButton
-                android:id="@+id/ib_popup_more_details"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/tv_popup_marker_lat"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:adjustViewBounds="true"
-                android:baselineAlignBottom="false"
-                android:contentDescription="TODO"
-                android:src="@mipmap/ic_more_details"
-                android:background="#00ffffff"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </android.support.constraint.ConstraintLayout>
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tv_popup_marker_lng"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp" />
+
+            <TextView
+                android:id="@+id/tv_popup_marker_country"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_popup_photo1"
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="5dp"
+            android:background="@drawable/border_image_view"
+            android:cropToPadding="true"
+            android:padding="1dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/popup_marker_content"
+            app:srcCompat="@android:drawable/ic_menu_report_image"
+            tools:layout_editor_absoluteY="5dp" />
+
+        <LinearLayout
+            android:id="@+id/popup_marker_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/iv_popup_photo1">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageButton
+                    android:id="@+id/ib_popup_more_details"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:adjustViewBounds="true"
+                    android:background="#00ffffff"
+                    android:baselineAlignBottom="false"
+                    android:contentDescription="TODO"
+                    android:src="@mipmap/ic_more_details"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </android.support.constraint.ConstraintLayout>
+
+        </LinearLayout>
+
+    </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>

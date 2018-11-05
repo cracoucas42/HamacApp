@@ -21,6 +21,11 @@
         Application developped by Cracoucas42\n
         Application developped by Cracoucas42\n
     </string>
+    <string name="popup_about_description">
+        Application developped by Cracoucas42\n
+        Application developped by Cracoucas42\n
+        Application developped by Cracoucas42\n
+    </string>
     <string name="popup_yes_no_title">Put A Hamac Marker ?</string>
     <string name="popup_yes_no_text"></string>
     <string name="title_activity_settings">Parameters</string>
@@ -188,4 +193,10 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="hamac_title">Hamac Details get data from object Hamac</string>
+    <string name="hamac_logo">Hamac_logo</string>
+    <string name="photo_1">Photo_1</string>
+    <string name="photo_2">Photo_2</string>
+    <string name="photo_3">Photo_3</string>
+    <string name="photo_4">Photo_4</string>
+    <string name="photo_5">Photo_5</string>
 </resources>

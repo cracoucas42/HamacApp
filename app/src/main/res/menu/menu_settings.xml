@@ -17,11 +17,6 @@
             android:title="@string/show_rules"
             map:showAsAction="ifRoom" />
         <item
-            android:id="@+id/show_help"
-            android:orderInCategory="1"
-            android:title="@string/show_help"
-            map:showAsAction="ifRoom" />
-        <item
             android:id="@+id/show_about"
             android:orderInCategory="1"
             android:title="@string/show_about"

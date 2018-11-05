@@ -33,18 +33,12 @@
                         android:layout_height="wrap_content"
                         app:layout_constraintStart_toStartOf="parent"
                         app:srcCompat="@mipmap/ic_hamac"
-                        android:contentDescription="Hamac_logo" />
+                        android:contentDescription="@string/hamac_logo" />
 
                     <TextView
                         android:id="@+id/tv_hamac_title"
                         android:layout_width="wrap_content"
-                        android:layout_height="21dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentLeft="false"
-                        android:layout_alignParentTop="false"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
-                        android:gravity="left"
+                        android:layout_height="wrap_content"
                         android:text="@string/hamac_title"
                         android:textColor="#89da1334"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -57,9 +51,6 @@
                         android:id="@+id/ib_hamac_details_close"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_gravity="right"
                         android:background="#00ffffff"
                         android:contentDescription="@string/popup_exit_button_description"
                         android:src="@mipmap/ic_close_popup"
@@ -67,10 +58,34 @@
                 </android.support.constraint.ConstraintLayout>
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tv_hamac_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/tv_hamac_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_hamac_lat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp" />
+
+        <TextView
+            android:id="@+id/tv_hamac_lng"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp" />
+
+        <TextView
+            android:id="@+id/tv_hamac_country"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp" />
 
         <ScrollView
             android:id="@+id/image_list_hamac_details"
@@ -86,96 +101,109 @@
 
                 <ImageView
                     android:id="@+id/iv_hamac_photo1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="250dp"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/border_image_view"
+                    android:contentDescription="@string/photo_1"
+                    android:cropToPadding="true"
+                    android:padding="1dp"
+                    android:scaleType="centerCrop"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@android:drawable/ic_menu_report_image"
-                    android:contentDescription="Photo_1" />
+                    app:srcCompat="@android:drawable/ic_menu_report_image" />
 
                 <ImageView
                     android:id="@+id/iv_hamac_photo2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="250dp"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/border_image_view"
+                    android:contentDescription="@string/photo_2"
+                    android:cropToPadding="true"
+                    android:padding="1dp"
+                    android:scaleType="centerCrop"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/iv_hamac_photo1"
-                    app:srcCompat="@android:drawable/ic_menu_report_image"
-                    android:contentDescription="Photo_2" />
+                    app:srcCompat="@android:drawable/ic_menu_report_image" />
 
                 <ImageView
                     android:id="@+id/iv_hamac_photo3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="250dp"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/border_image_view"
+                    android:contentDescription="@string/photo_3"
+                    android:cropToPadding="true"
+                    android:padding="1dp"
+                    android:scaleType="centerCrop"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/iv_hamac_photo2"
-                    app:srcCompat="@android:drawable/ic_menu_report_image"
-                    android:contentDescription="Photo_3" />
+                    app:srcCompat="@android:drawable/ic_menu_report_image" />
 
                 <ImageView
                     android:id="@+id/iv_hamac_photo4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="250dp"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/border_image_view"
+                    android:contentDescription="@string/photo_4"
+                    android:cropToPadding="true"
+                    android:padding="1dp"
+                    android:scaleType="centerCrop"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/iv_hamac_photo3"
-                    app:srcCompat="@android:drawable/ic_menu_report_image"
-                    android:contentDescription="Photo_4" />
+                    app:srcCompat="@android:drawable/ic_menu_report_image" />
 
                 <ImageView
                     android:id="@+id/iv_hamac_photo5"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="250dp"
+                    android:layout_height="150dp"
+                    android:layout_margin="5dp"
                     android:layout_marginLeft="0dp"
                     android:layout_marginTop="0dp"
                     android:layout_marginRight="0dp"
                     android:layout_marginBottom="5dp"
+                    android:background="@drawable/border_image_view"
+                    android:contentDescription="@string/photo_5"
+                    android:cropToPadding="true"
+                    android:padding="1dp"
+                    android:scaleType="centerCrop"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/iv_hamac_photo4"
-                    app:srcCompat="@android:drawable/ic_menu_report_image"
-                    android:contentDescription="Photo_5"/>
+                    app:srcCompat="@android:drawable/ic_menu_report_image" />
+
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/iv_add_image_hamac_details"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
+        android:layout_gravity="end|bottom"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:src="@android:drawable/ic_menu_camera"
+        app:backgroundTint="@color/ic_more_details_background"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/hamac_details">
+        app:layout_constraintRight_toRightOf="parent" />
 
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <ImageView
-                android:id="@+id/iv_add_image_hamac_details"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="32dp"
-                android:layout_marginRight="32dp"
-                android:layout_weight="1"
-                android:src="@android:drawable/ic_menu_camera"
-                app:layout_constraintRight_toRightOf="parent"
-                android:contentDescription="Add_image_hamac_details" />
-
-            <ImageView
-                android:id="@+id/iv_save_hamac_details"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="32dp"
-                android:layout_marginRight="32dp"
-                android:src="@android:drawable/ic_menu_save"
-                app:layout_constraintEnd_toStartOf="@+id/iv_add_image_hamac_details"
-                android:contentDescription="Save_image_hamac_details" />
-        </android.support.constraint.ConstraintLayout>
-
-    </LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/iv_save_hamac_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginRight="80dp"
+        android:layout_marginBottom="20dp"
+        android:src="@android:drawable/ic_menu_save"
+        app:backgroundTint="@color/ic_more_details_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
